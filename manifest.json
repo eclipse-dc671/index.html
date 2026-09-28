@@ -5,5 +5,13 @@
   "display": "standalone",
   "background_color": "#08090e",
   "theme_color": "#08090e",
-  "description": "Free Fire Sensitivity and DPI Settings Tool"
+  "description": "Free Fire Sensitivity and DPI Settings Tool",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/808/808439.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
