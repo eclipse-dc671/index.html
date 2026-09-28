@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FF Sensi // Pro Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background-color: #08090e;
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 12px 12px 60px 12px;
+      overflow-x: hidden;
+    }
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #12141e;
+      border: 1px solid rgba(255, 69, 0, 0.35);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 20px rgba(255, 69, 0, 0.15);
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #ffb700;
+      letter-spacing: 1px;
+    }
+    .brand-title span {
+      color: #ff4500;
+    }
+    .version-tag {
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(255, 69, 0, 0.2);
+      color: #ff4500;
+      border: 1px solid #ff4500;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+    /* Tabs */
+    .tabs-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: #0f111a;
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 14px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #8f96ab;
+      padding: 10px 4px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #ff4500, #ff1744);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4);
+    }
+    /* Sections */
+    .view-card {
+      display: none;
+      background: #12141f;
+      border: 1px solid rgba(255, 69, 0, 0.25);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    }
+    .view-card.active {
+      display: block;
+    }
+    .card-heading {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffb700;
+      margin-bottom: 12px;
+    }
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #8f96ab;
+      margin-bottom: 6px;
+      display: block;
+      text-transform: uppercase;
+    }
+    .styled-select, .styled-input {
+      width: 100%;
+      background: #090a0f;
+      color: #ffffff;
+      border: 1px solid rgba(255, 69, 0, 0.4);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      outline: none;
+    }
+    .main-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff4500, #ff1744);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 69, 0, 0.45);
+      margin-bottom: 16px;
+    }
+    .main-btn:active {
+      transform: scale(0.98);
+    }
+    /* Bars */
+    .bars-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .bar-track {
+      width: 100%;
+      height: 9px;
+      background: #1b1e2c;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .bar-val-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff4500, #ffb700);
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+    /* Specs */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .spec-card {
+      background: #090a0f;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .spec-num {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffb700;
+    }
+    /* Names List */
+    .nick-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .nick-box {
+      background: #090a0f;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .copy-tag {
+      background: rgba(255, 69, 0, 0.2);
+      border: 1px solid #ff4500;
+      color: #ff4500;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    /* Reflex Game */
+    .game-arena {
+      width: 100%;
+      height: 260px;
+      background: #08090e;
+      border: 1.5px dashed rgba(255, 69, 0, 0.4);
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .game-head-target {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff1744 30%, #ff4500 80%);
+      box-shadow: 0 0 15px #ff1744;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .game-head-target::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+    }
+    .game-status-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffb700;
+      margin-bottom: 8px;
+    }
+    /* Ad Banner Slot */
+    .ad-box {
+      width: 100%;
+      padding: 12px;
+      margin-top: 14px;
+      background: #0a0b12;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: #8f96ab;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand-title">🔥 FF <span>SENSI</span></div>
+    <div class="version-tag">PRO v1.0</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="openTab('sensi', this)">🎯 Sensi</button>
+    <button class="tab-btn" onclick="openTab('names', this)">✨ Names</button>
+    <button class="tab-btn" onclick="openTab('reflex', this)">🎮 Reflex</button>
+  </div>
+
+  <!-- TAB 1: SENSI -->
+  <div id="tab-sensi" class="view-card active">
+    <div class="card-heading">📱 Select Device Model</div>
+    <label class="field-label">Phone Brand</label>
+    <select id="phoneModel" class="styled-select" onchange="changeModel()">
+      <option value="redmi">Redmi / Xiaomi (Note Series)</option>
+      <option value="realme">Realme (Narzo / GT Series)</option>
+      <option value="samsung">Samsung (Galaxy M / F / A)</option>
+      <option value="vivo">Vivo / iQOO</option>
+      <option value="oneplus">OnePlus / Nord</option>
+      <option value="poco">POCO Series</option>
+      <option value="lowram">2GB / 3GB Low RAM Phones</option>
+    </select>
+
+    <button class="main-btn" onclick="boostSensi()">⚡ APPLY HEADSHOT BOOST</button>
+
+    <div class="bars-wrap">
+      <div class="bar-row">
+        <div class="bar-meta"><span>General</span><span id="txtGen" style="color:#ffb700;">98</span></div>
+        <div class="bar-track"><div id="fillGen" class="bar-val-fill" style="width: 98%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span>Red Dot</span><span id="txtRed" style="color:#ffb700;">95</span></div>
+        <div class="bar-track"><div id="fillRed" class="bar-val-fill" style="width: 95%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span>2x Scope</span><span id="txt2x" style="color:#ffb700;">92</span></div>
+        <div class="bar-track"><div id="fill2x" class="bar-val-fill" style="width: 92%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span>4x Scope</span><span id="txt4x" style="color:#ffb700;">88</span></div>
+        <div class="bar-track"><div id="fill4x" class="bar-val-fill" style="width: 88%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span>Sniper</span><span id="txtSnip" style="color:#ffb700;">62</span></div>
+        <div class="bar-track"><div id="fillSnip" class="bar-val-fill" style="width: 62%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span>Free Look</span><span id="txtFree" style="color:#ffb700;">75</span></div>
+        <div class="bar-track"><div id="fillFree" class="bar-val-fill" style="width: 75%;"></div></div>
+      </div>
+    </div>
+
+    <div class="specs-grid">
+      <div class="spec-card">
+        <div class="field-label">BEST DPI</div>
+        <div class="spec-num" id="specDpi">460</div>
+      </div>
+      <div class="spec-card">
+        <div class="field-label">FIRE BUTTON</div>
+        <div class="spec-num" id="specBtn">48%</div>
+      </div>
+    </div>
+
+    <div class="ad-box">📢 [ Google AdMob Banner Slot ]</div>
+  </div>
+
+  <!-- TAB 2: NAMES -->
+  <div id="tab-names" class="view-card">
+    <div class="card-heading">✨ Stylish Nickname Maker</div>
+    <input type="text" id="userInputName" class="styled-input" placeholder="Type your name (e.g. Ayush)..." oninput="buildNames()">
+    <div class="nick-list" id="namesContainer"></div>
+  </div>
+
+  <!-- TAB 3: REFLEX -->
+  <div id="tab-reflex" class="view-card">
+    <div class="card-heading">🎯 Reflex Headshot Trainer</div>
+    <div class="game-status-line">
+      <div>SCORE: <span id="gamePoints">0</span></div>
+      <div>TIME: <span id="gameClock" style="color:#ff4500;">20s</span></div>
+    </div>
+    <button id="startBtn" class="main-btn" onclick="beginAimGame()">▶ START TRAINING</button>
+    <div class="game-arena" id="arena">
+      <div class="game-head-target" id="aimCircle" onclick="tapAim()"></div>
+    </div>
+  </div>
+
+  <script>
+    const presets = {
+      redmi:  { gen: 98, red: 95, s2: 92, s4: 88, snp: 62, free: 75, dpi: 460, btn: 48 },
+      realme: { gen: 99, red: 97, s2: 95, s4: 90, snp: 65, free: 80, dpi: 480, btn: 46 },
+      samsung:{ gen: 100, red: 98, s2: 94, s4: 92, snp: 58, free: 70, dpi: 450, btn: 52 },
+      vivo:   { gen: 97, red: 94, s2: 91, s4: 86, snp: 64, free: 76, dpi: 440, btn: 50 },
+      oneplus:{ gen: 95, red: 92, s2: 89, s4: 85, snp: 55, free: 72, dpi: 420, btn: 45 },
+      poco:   { gen: 100, red: 96, s2: 93, s4: 89, snp: 68, free: 82, dpi: 490, btn: 47 },
+      lowram: { gen: 100, red: 100, s2: 98, s4: 95, snp: 72, free: 85, dpi: 520, btn: 54 }
+    };
+
+    function openTab(tabName, btn) {
+      document.querySelectorAll('.view-card').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabName).classList.add('active');
+      btn.classList.add('active');
+      if (tabName === 'names' && !document.getElementById('userInputName').value) {
+        document.getElementById('userInputName').value = "Ayush";
+        buildNames();
+      }
+    }
+
+    function changeModel() {
+      const model = document.getElementById('phoneModel').value;
+      renderValues(presets[model]);
+    }
+
+    function boostSensi() {
+      const model = document.getElementById('phoneModel').value;
+      const base = presets[model];
+      const boosted = {
+        gen: Math.min(100, base.gen + Math.floor(Math.random() * 2)),
+        red: Math.min(100, base.red + Math.floor(Math.random() * 2)),
+        s2: base.s2,
+        s4: base.s4,
+        snp: base.snp,
+        free: base.free,
+        dpi: base.dpi,
+        btn: base.btn
+      };
+      renderValues(boosted);
+    }
+
+    function renderValues(d) {
+      document.getElementById('txtGen').innerText = d.gen;
+      document.getElementById('fillGen').style.width = d.gen + '%';
+      document.getElementById('txtRed').innerText = d.red;
+      document.getElementById('fillRed').style.width = d.red + '%';
+      document.getElementById('txt2x').innerText = d.s2;
+      document.getElementById('fill2x').style.width = d.s2 + '%';
+      document.getElementById('txt4x').innerText = d.s4;
+      document.getElementById('fill4x').style.width = d.s4 + '%';
+      document.getElementById('txtSnip').innerText = d.snp;
+      document.getElementById('fillSnip').style.width = d.snp + '%';
+      document.getElementById('txtFree').innerText = d.free;
+      document.getElementById('fillFree').style.width = d.free + '%';
+      document.getElementById('specDpi').innerText = d.dpi;
+      document.getElementById('specBtn').innerText = d.btn + '%';
+    }
+
+    function buildNames() {
+      const val = document.getElementById('userInputName').value.trim() || "Ayush";
+      const wrap = document.getElementById('namesContainer');
+      const templates = [
+        `亗 ${val} 亗`,
+        `꧁༺${val}༻꧂`,
+        `⚡ ${val.toUpperCase()} ⚡`,
+        `★ ${val} ★`,
+        `乂 ${val} 乂`,
+        `✿ ᴍ ʀ • ${val} ✿`,
+        `〆 ${val} 〆`
+      ];
+      wrap.innerHTML = templates.map(t => `
+        <div class="nick-box">
+          <span>${t}</span>
+          <span class="copy-tag" onclick="copyNick('${t}')">COPY</span>
+        </div>
+      `).join('');
+    }
+
+    function copyNick(t) {
+      navigator.clipboard.writeText(t);
+      alert('Copied: ' + t);
+    }
+
+    let pts = 0;
+    let sec = 20;
+    let timerRef = null;
+
+    function beginAimGame() {
+      pts = 0;
+      sec = 20;
+      document.getElementById('gamePoints').innerText = pts;
+      document.getElementById('gameClock').innerText = sec + 's';
+      document.getElementById('startBtn').style.display = 'none';
+      const circle = document.getElementById('aimCircle');
+      circle.style.display = 'flex';
+      relocateTarget();
+
+      timerRef = setInterval(() => {
+        sec--;
+        document.getElementById('gameClock').innerText = sec + 's';
+        if (sec <= 0) {
+          clearInterval(timerRef);
+          circle.style.display = 'none';
+          document.getElementById('startBtn').style.display = 'block';
+          document.getElementById('startBtn').innerText = '🔄 PLAY AGAIN (Score: ' + pts + ')';
+        }
+      }, 1000);
+    }
+
+    function relocateTarget() {
+      const arena = document.getElementById('arena');
+      const circle = document.getElementById('aimCircle');
+      const maxW = arena.clientWidth - 50;
+      const maxH = arena.clientHeight - 50;
+      circle.style.left = Math.floor(Math.random() * maxW) + 'px';
+      circle.style.top = Math.floor(Math.random() * maxH) + 'px';
+    }
+
+    function tapAim() {
+      pts += 10;
+      document.getElementById('gamePoints').innerText = pts;
+      relocateTarget();
+    }
+
+    changeModel();
+  </script>
+</body>
+</html>
