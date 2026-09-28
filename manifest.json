@@ -1,0 +1,9 @@
+{
+  "name": "FF Sensi",
+  "short_name": "FF Sensi",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#08090e",
+  "theme_color": "#08090e",
+  "description": "Free Fire Sensitivity and DPI Settings Tool"
+}
